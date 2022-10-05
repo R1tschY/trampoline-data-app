@@ -1,0 +1,8 @@
+nane: sql
+dependencies:
+  - sqlalchemy=1.4.39
+  - pandas=1.4.4
+  - plotly_express=0.4.1
+  - numpy=1.21.5
+  - scipy=1.7.3
+  - sqlalchemy=1.4.39
