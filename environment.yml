@@ -1,6 +1,7 @@
 name: sql
 channels:
   - plotly
+  - conda-forge
 dependencies:
   - sqlalchemy=1.4.39
   - pandas=1.4.4
