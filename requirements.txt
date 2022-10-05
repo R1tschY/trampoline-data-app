@@ -60,6 +60,7 @@ pycparser==2.21
 pydeck==0.7.1
 Pygments==2.13.0
 Pympler==1.0.1
+pymysql==1.0.2 
 pyOpenSSL==22.0.0
 pyparsing==3.0.9
 pyrsistent==0.18.1
