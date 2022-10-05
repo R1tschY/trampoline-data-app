@@ -1,4 +1,6 @@
-nane: sql
+name: sql
+channels:
+  - plotly
 dependencies:
   - sqlalchemy=1.4.39
   - pandas=1.4.4
