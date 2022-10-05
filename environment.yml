@@ -10,3 +10,4 @@ dependencies:
   - scipy=1.7.3
   - sqlalchemy=1.4.39
   - libcxx=14.0.6
+  - libgc=*.*
