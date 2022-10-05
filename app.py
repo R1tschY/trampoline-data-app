@@ -13,6 +13,21 @@ routine_conv = {
     '2nd': 1
 }
 ## Functions
+@st.experimental_singleton
+def init_engine():
+    engine = create_engine(
+    sqlalchemy.engine.url.URL.create(
+        **st.secrets["mysql"]
+    ),
+    pool_recycle=3600
+    )
+    return engine
+
+@st.experimental_memo(ttl=600)
+def make_call(sql_str, _engine):
+    with _engine.connect() as con:
+        df = pd.read_sql(sql_str, con)
+    return df
 
 def calcArea(x, y, in_hd):
     test_nan = np.sum(np.isnan(x))
@@ -228,15 +243,12 @@ st.set_page_config(page_title="Trampoline Dashboard",
 hash_val = 'empty'
 exercise = 'All'
 
-engine = create_engine(
-    sqlalchemy.engine.url.URL.create(
-        **st.secrets["mysql"]
-    ),
-  pool_recycle=3600
-  )
-
-with engine.connect() as connection:
-    df = pd.read_sql("SELECT * from ranklists", connection)
+engine = init_engine()
+  
+sql_str = "SELECT * from ranklists"
+df = make_call(sql_str, engine)
+# with engine.connect() as connection:
+#     df = pd.read_sql("SELECT * from ranklists", connection)
 df['Event Name'] = df["Year"].astype(str) + " " + df["Event"]
 
 ## Sidebar
