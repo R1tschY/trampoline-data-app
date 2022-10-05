@@ -73,7 +73,7 @@ dependencies:
   - libev=4.33
   - libevent=2.1.10
   - libffi=3.3
-  - libgfortran=5.0.0
+  # - libgfortran=5.0.0
   - libgfortran5=11.2.0
   - libnghttp2=1.47.0
   - libpng=1.6.38
