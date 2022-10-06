@@ -324,7 +324,10 @@ if exercise != 'All':
     df_athlete = make_call(sql_str2, engine)
     if debug:
         st.write(df_athlete)
-    hash_val = df_athlete["Hash"].iloc[0]
+    if len(df_athlete) > 0:
+        hash_val = df_athlete["Hash"].iloc[0]
+    else:
+        hash_val = ''
 
     if hash_val != '':
         sql_str2 = "SELECT * from `" + hash_val + "`"
