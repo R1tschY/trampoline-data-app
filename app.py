@@ -156,36 +156,34 @@ def calculate_ranks(df, rating, engine):
         phase_select = df["Phase"].iloc[int(routine_conv[row['Routine']])]
         routine_select = df["Routine"].iloc[int(routine_conv[row['Routine']])]
         sql_str = "select * from " + event_str.replace(" ", "_").lower() + "_" + gender.lower() + " where name = '" + athlete_name + "' and phase = '" + phase_select + "' and routine = '" + routine_select + "'"
-        with engine.connect() as connection:
-            df_athlete = pd.read_sql(sql_str, connection)
-            # st.write(df_athlete)
-            if len(df_athlete) > 0:
-                hash_val = df_athlete["Hash"].iloc[0]
-                if hash_val != '':
-                    sql_str = "select * from `" + hash_val + "`"
-                    with engine.connect() as connection:
-                        df_exercisedata = pd.read_sql(sql_str, connection)
-                        df_exercisedata = df_exercisedata.astype(float)
-                        # st.write(df_exercisedata)
-                        x = df_exercisedata[['x']].values
-                        y = df_exercisedata[['y']].values
-                        if rating == "H3 Distance":
-                            rating_list.append(calcDistance(x, y, 3))
-                        if rating == "H5 Distance":
-                            rating_list.append(calcDistance(x, y, 5))
-                        if rating == "H3 Error":
-                            rating_list.append(calcError(x, y, 3))
-                        if rating == "H5 Error":
-                            rating_list.append(calcError(x, y, 5))
-                        if rating == "H3 Hull":
-                            rating_list.append(calcArea(x, y, in_hd=3))
-                        if rating == "H5 Hull":
-                            rating_list.append(calcArea(x, y, in_hd=5))
-                        # hull
-                else:
-                    rating_list.append(0)
+        df_athlete = make_call(sql_str, engine)
+        # st.write(df_athlete)
+        if len(df_athlete) > 0:
+            hash_val = df_athlete["Hash"].iloc[0]
+            if hash_val != '':
+                sql_str = "select * from `" + hash_val + "`"
+                df_exercisedata = make_call(sql_str, engine)
+                df_exercisedata = df_exercisedata.astype(float)
+                # st.write(df_exercisedata)
+                x = df_exercisedata[['x']].values
+                y = df_exercisedata[['y']].values
+                if rating == "H3 Distance":
+                    rating_list.append(calcDistance(x, y, 3))
+                if rating == "H5 Distance":
+                    rating_list.append(calcDistance(x, y, 5))
+                if rating == "H3 Error":
+                    rating_list.append(calcError(x, y, 3))
+                if rating == "H5 Error":
+                    rating_list.append(calcError(x, y, 5))
+                if rating == "H3 Hull":
+                    rating_list.append(calcArea(x, y, in_hd=3))
+                if rating == "H5 Hull":
+                    rating_list.append(calcArea(x, y, in_hd=5))
+                # hull
             else:
                 rating_list.append(0)
+        else:
+            rating_list.append(0)
     
     if rating != "H3 Original":
         df[rating] = rating_list
@@ -247,8 +245,6 @@ engine = init_engine()
   
 sql_str = "SELECT * from ranklists"
 df = make_call(sql_str, engine)
-# with engine.connect() as connection:
-#     df = pd.read_sql("SELECT * from ranklists", connection)
 df['Event Name'] = df["Year"].astype(str) + " " + df["Event"]
 
 ## Sidebar
@@ -257,8 +253,8 @@ st.markdown("### Main Overview")
 # Event
 
 event_str = st.sidebar.selectbox(
-     'Select Event:',
-     (['All'] + df["Event Name"].unique().tolist())
+    'Select Event:',
+    (['All'] + df["Event Name"].unique().tolist())
     )
 
 df_temp = df[df['Event Name']==event_str]
@@ -271,8 +267,7 @@ if event_str == 'All':
 else:
     sql_str = "SELECT * from ranklists where event=" + "'" + df_temp["Event"][0] + "' and year=" + "'" + df_temp["Year"][0].astype(str) + "'"
     # st.write(sql_str)
-with engine.connect() as connection:
-    df_select = pd.read_sql(sql_str, connection)
+df_select = make_call(sql_str, engine)
 
 # Gender
 
@@ -287,8 +282,8 @@ else:
     sql_str = "SELECT * from " + "(" + sql_str + ") AS T " + "where gender=" + "'" + gender + "'"
     # st.write(sql_str)
 
-with engine.connect() as connection:
-    df_select = pd.read_sql(sql_str, connection)
+
+df_select = make_call(sql_str, engine)
 
 # Athlte
 
@@ -302,8 +297,8 @@ if athlete == 'All':
 else:
     sql_str = "SELECT * from " + "(" + sql_str + ") AS T " + "where name=" + "'" + athlete + "'"
 
-with engine.connect() as connection:
-    df_select = pd.read_sql(sql_str, connection)
+
+df_select = make_call(sql_str, engine)
     
 # df_select.droplevel("index")
 df_select.drop(['index'], axis=1, inplace=True)
@@ -325,16 +320,16 @@ if exercise != 'All':
 
     if debug:
         st.write(sql_str)
-    with engine.connect() as connection:
-        df_athlete = pd.read_sql(sql_str2, connection)
+    
+    df_athlete = make_call(sql_str, engine)
     if debug:
         st.write(df_athlete)
     hash_val = df_athlete["Hash"].iloc[0]
 
     if hash_val != '':
         sql_str2 = "SELECT * from `" + hash_val + "`"
-        with engine.connect() as connection:
-            df_exercisedata = pd.read_sql(sql_str2, connection)
+        
+        df_exercisedata = make_call(sql_str, engine)
         df_exercisedata = df_exercisedata.astype(float)
         x = df_exercisedata[['x']].values
         y = df_exercisedata[['y']].values
@@ -450,8 +445,8 @@ phase = st.sidebar.selectbox(
 
 sql_str = "SELECT * from " + "(" + sql_str + ") AS T " + "where Phase=" + "'" + phase + "'"
 
-with engine.connect() as connection:
-    df_ranking = pd.read_sql(sql_str, connection)
+
+df_ranking = make_call(sql_str, engine)
 rating_str = ("H3 Original", "H3 Distance", "H5 Distance", "H3 Error", "H5 Error", "H3 Hull", "H5 Hull")
 rating = st.sidebar.selectbox(
      'Select Rating:',
