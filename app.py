@@ -319,9 +319,9 @@ if exercise != 'All':
     # sql_str = 'SELECT * from "2021_world_championships_men"'
 
     if debug:
-        st.write(sql_str)
+        st.write(sql_str2)
     
-    df_athlete = make_call(sql_str, engine)
+    df_athlete = make_call(sql_str2, engine)
     if debug:
         st.write(df_athlete)
     hash_val = df_athlete["Hash"].iloc[0]
@@ -329,7 +329,7 @@ if exercise != 'All':
     if hash_val != '':
         sql_str2 = "SELECT * from `" + hash_val + "`"
         
-        df_exercisedata = make_call(sql_str, engine)
+        df_exercisedata = make_call(sql_str2, engine)
         df_exercisedata = df_exercisedata.astype(float)
         x = df_exercisedata[['x']].values
         y = df_exercisedata[['y']].values
