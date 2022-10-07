@@ -29,164 +29,48 @@ def make_call(sql_str, _engine):
         df = pd.read_sql(sql_str, con)
     return df
 
-def calcArea(x, y, in_hd):
-    test_nan = np.sum(np.isnan(x))
-    # print(test_nan)
-    valid_values = len(x)-test_nan
-    x = x[0:valid_values]
-    y = y[0:valid_values]
-    in_hd = (in_hd/10) * valid_values
-    
-    m = 35
-    n = 35
-    x_min = np.array([-m, m, -m, m, -m, m, -m, m, -m, m])
-    y_min = np.array([-n, -n, n, n, -n, -n, n, n, -n, -n])
-    hull_min = ConvexHull(np.column_stack((x_min, y_min)))
-    a = 214
-    b = 107
-    x_max = np.array([-a, a, -a, a, -a, a, -a, a, -a, a])
-    y_max = np.array([-b, -b, b, b, -b, -b, b, b, -b, -b])
-    hull_max = ConvexHull(np.column_stack((x_max, y_max)))
-
-    hd_max = in_hd
-    slices = valid_values+1
-    hd_range = np.linspace(0, hd_max, slices)
-    # hd_range = np.append(hd_range, 5)
-    area_range = np.linspace(hull_min.volume, hull_max.volume, 10)
-    # print(hd_range)
-    # print(area_range)
-    if test_nan < 8:
-        in_area = ConvexHull(np.hstack((x,y))).volume
-        below_range = np.sum(in_area >= area_range)
-        # print(np.sum(in_area > area_range))
-        return(len(x)-hd_range[below_range])
-    else:
-        return(len(x))
-
-
-def calcDistance(x, y, in_hd):
-    test_nan = np.sum(np.isnan(x))
-    # print(test_nan)
-    valid_values = len(x)-test_nan
-    x = x[0:valid_values]
-    y = y[0:valid_values]
-    in_hd = (in_hd/10) * valid_values
-
-    in_distance = np.sum(np.sqrt(x**2+y**2))
-    m = 35
-    n = 35
-    x_min = np.array([-m, m, -m, m, 0, m, 0, m, 0, 0])
-    y_min = np.array([-n, -n, 0, 0, -n, -n, n, n, 0, 0])
-    optimum_distance = np.sum(np.sqrt(x_min**2+y_min**2)) 
-
-    a = 214
-    b = 107
-    x_max = np.array([-a, a, -a, a, -107.5, 107.5, -107.5, 107.5, -a, a])
-    y_max = np.array([-b, -b, b, b, -b, -b, b, b, 0, 0])
-    worst_distance = np.sum(np.sqrt(x_max**2+y_max**2))
-
-    hd_max = in_hd
-    slices = valid_values+1
-    hd_range = np.linspace(0, hd_max, slices)
-    # hd_range = np.append(hd_range, 5)
-    area_range = np.linspace(optimum_distance, worst_distance, 10)
-    # print(hd_range)
-    # print(area_range)
-
-    below_range = np.sum(in_distance >= area_range)
-    # print(np.sum(in_area > area_range))
-    return(len(x)-hd_range[below_range])
-
-def calcError(x, y, in_hd):
-    test_nan = np.sum(np.isnan(x))
-    # print(test_nan)
-    valid_values = len(x)-test_nan
-    x = x[0:valid_values]
-    y = y[0:valid_values]
-    in_hd = (in_hd/10) * valid_values
-
-    distance = np.sqrt(x**2+2*y**2)
-    mean_distance = np.mean(distance)
-    ce = np.sum(distance)/len(x)
-    ve = np.sqrt(np.sum((distance - mean_distance)**2/len(x)))
-    current_error = ce + ve
-    # print(current_error)
-    m = 35
-    n = 35
-    x_min = np.array([-m, m, -m, m, 0, m, 0, m, 0, 0])
-    y_min = np.array([-n, -n, 0, 0, -n, -n, n, n, 0, 0])
-
-    distance = np.sqrt(x_min**2+2*y_min**2)
-    mean_distance = np.mean(distance)
-    ce = np.sum(distance)/len(x_min)
-    ve = np.sqrt(np.sum((distance - mean_distance)**2/len(x_min)))
-    optimum_error = ce + ve
-
-    a = 214
-    b = 107
-    x_max = np.array([-a, a, -a, a, -107.5, 107.5, -107.5, 107.5, -a, a])
-    y_max = np.array([-b, -b, b, b, -b, -b, b, b, 0, 0])
-
-    distance = np.sqrt(x_max**2+2*y_max**2)
-    mean_distance = np.mean(distance)
-    ce = np.sum(distance)/len(x_max)
-    ve = np.sqrt(np.sum((distance - mean_distance)**2/len(x_max)))
-    worst_error = ce + ve
-
-    hd_max = in_hd
-    slices = int(round(in_hd/0.05) + 1)
-    hd_range = np.linspace(0, hd_max, slices)
-    # hd_range = np.append(hd_range, 5)
-    area_range = np.linspace(optimum_error, worst_error, slices-1)
-    # print(hd_range)
-    # print(area_range)
-
-    below_range = np.sum(current_error >= area_range)
-    # print(np.sum(in_area > area_range))
-    return(len(x)-hd_range[below_range])
-
-def calculate_ranks(df, rating, engine):
+def calculate_ranks(df, rating):
     df = df.reset_index()
     rating_list = []
-    for idx, row in df.iterrows():
-        gender = row['Gender']
-        athlete = row['Name']
-        athlete_name = athlete.split()
-        athlete_name = athlete_name[0].capitalize() + ' ' + athlete_name[1]
-        phase_select = df["Phase"].iloc[int(routine_conv[row['Routine']])]
-        routine_select = df["Routine"].iloc[int(routine_conv[row['Routine']])]
-        sql_str = "select * from " + event_str.replace(" ", "_").lower() + "_" + gender.lower() + " where name = '" + athlete_name + "' and phase = '" + phase_select + "' and routine = '" + routine_select + "'"
-        df_athlete = make_call(sql_str, engine)
-        # st.write(df_athlete)
-        if len(df_athlete) > 0:
-            hash_val = df_athlete["Hash"].iloc[0]
-            if hash_val != '':
-                sql_str = "select * from `" + hash_val + "`"
-                df_exercisedata = make_call(sql_str, engine)
-                df_exercisedata = df_exercisedata.astype(float)
-                # st.write(df_exercisedata)
-                x = df_exercisedata[['x']].values
-                y = df_exercisedata[['y']].values
-                if rating == "HD3 Distance":
-                    rating_list.append(calcDistance(x, y, 3))
-                if rating == "HD5 Distance":
-                    rating_list.append(calcDistance(x, y, 5))
-                if rating == "HD3 Error":
-                    rating_list.append(calcError(x, y, 3))
-                if rating == "HD5 Error":
-                    rating_list.append(calcError(x, y, 5))
-                if rating == "HD3 Hull":
-                    rating_list.append(calcArea(x, y, in_hd=3))
-                if rating == "HD5 Hull":
-                    rating_list.append(calcArea(x, y, in_hd=5))
-                # hull
-            else:
-                rating_list.append(0)
-        else:
-            rating_list.append(0)
+    # for idx, row in df.iterrows():
+    #     gender = row['Gender']
+    #     athlete = row['Name']
+    #     athlete_name = athlete.split()
+    #     athlete_name = athlete_name[0].capitalize() + ' ' + athlete_name[1]
+    #     phase_select = df["Phase"].iloc[int(routine_conv[row['Routine']])]
+    #     routine_select = df["Routine"].iloc[int(routine_conv[row['Routine']])]
+    #     sql_str = "select * from " + event_str.replace(" ", "_").lower() + "_" + gender.lower() + " where name = '" + athlete_name + "' and phase = '" + phase_select + "' and routine = '" + routine_select + "'"
+    #     df_athlete = make_call(sql_str, engine)
+    #     # st.write(df_athlete)
+    #     if len(df_athlete) > 0:
+    #         hash_val = df_athlete["Hash"].iloc[0]
+    #         if hash_val != '':
+    #             sql_str = "select * from `" + hash_val + "`"
+    #             df_exercisedata = make_call(sql_str, engine)
+    #             df_exercisedata = df_exercisedata.astype(float)
+    #             # st.write(df_exercisedata)
+    #             x = df_exercisedata[['x']].values
+    #             y = df_exercisedata[['y']].values
+    #             if rating == "HD3 Distance":
+    #                 rating_list.append(calcDistance(x, y, 3))
+    #             if rating == "HD5 Distance":
+    #                 rating_list.append(calcDistance(x, y, 5))
+    #             if rating == "HD3 Error":
+    #                 rating_list.append(calcError(x, y, 3))
+    #             if rating == "HD5 Error":
+    #                 rating_list.append(calcError(x, y, 5))
+    #             if rating == "HD3 Hull":
+    #                 rating_list.append(calcArea(x, y, in_hd=3))
+    #             if rating == "HD5 Hull":
+    #                 rating_list.append(calcArea(x, y, in_hd=5))
+    #             # hull
+    #         else:
+    #             rating_list.append(0)
+    #     else:
+    #         rating_list.append(0)
     
     if rating != "HD3 Original":
-        df[rating] = rating_list
+        # df[rating] = rating_list
         entry_full = 'Sum ' + rating
         df[entry_full] = df['Difficulty'] + df['Time of flight'] + df['Execution'] + df[rating] + df['Penalty']
     else:
@@ -229,7 +113,10 @@ def calculate_ranks(df, rating, engine):
     meanchange_list.append(np.mean(rank_change))
     df_result["Rankchange"] = rank_change_unsigned_str
 
-    df_result = df_result.drop(["Event", "Phase", "Year", "Location", "Year", "level_0", "index", "Gender", "Routine", "Rank", "Qualified"], axis=1)
+    pop_str = ["HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull", "Event", "Phase", "Year", "Location", "Year", "index", "Gender", "Routine", "Rank", "Qualified", "Hash"]
+    if rating != "HD3 Original":
+        pop_str.remove(rating)
+    df_result = df_result.drop(pop_str, axis=1)
     return df_result
 
 st.set_page_config(page_title="Trampoline Dashboard",
@@ -440,6 +327,6 @@ rating = st.sidebar.selectbox(
 
 if (event_str != 'All') and (gender != 'All') and (athlete == 'All'):
     # st.write(rating)
-    df_result = calculate_ranks(df_ranking, rating, engine)
+    df_result = calculate_ranks(df_ranking, rating)
     st.markdown("### Rank Analysis")
     st.table(df_result)
