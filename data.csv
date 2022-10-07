@@ -1,0 +1,23 @@
+Association,Event Phase,Output,Input,First,Last,Event,Year,Location
+europe,Qualification,EM2022_Rimini_Results_Women_Qualification,"28TH EUROPEAN CHAMPIONSHIPS IN TRAMPOLINE GYMNASTICS 2022 Rimini Media.pdf",34,37,European Championships,2022,Rimini
+europe,Semi,EM2022_Rimini_Results_Women_Semi,"28TH EUROPEAN CHAMPIONSHIPS IN TRAMPOLINE GYMNASTICS 2022 Rimini Media.pdf",45,45,European Championships,2022,Rimini
+europe,Final,EM2022_Rimini_Results_Women_Finals,"28TH EUROPEAN CHAMPIONSHIPS IN TRAMPOLINE GYMNASTICS 2022 Rimini Media.pdf",48,48,European Championships,2022,Rimini
+europe,Qualification,EM2022_Rimini_Results_Men_Qualification,"28TH EUROPEAN CHAMPIONSHIPS IN TRAMPOLINE GYMNASTICS 2022 Rimini Media.pdf",129,133,European Championships,2022,Rimini
+europe,Semi,EM2022_Rimini_Results_Men_Semi,"28TH EUROPEAN CHAMPIONSHIPS IN TRAMPOLINE GYMNASTICS 2022 Rimini Media.pdf",141,141,European Championships,2022,Rimini
+europe,Final,EM2022_Rimini_Results_Men_Finals,"28TH EUROPEAN CHAMPIONSHIPS IN TRAMPOLINE GYMNASTICS 2022 Rimini Media.pdf",144,144,European Championships,2022,Rimini
+world,Qualification,GTR_2021WCH_Baku_Results_Men_Qualification,Load_Comp_Data.pdf,280,283,World Championships,2021,Baku
+world,Semi,GTR_2021WCH_Baku_Results_Men_Semi,Load_Comp_Data.pdf,369,369,World Championships,2021,Baku
+world,Final,GTR_2021WCH_Baku_Results_Men_Final,Load_Comp_Data.pdf,385,385,World Championships,2021,Baku
+world,Qualification,GTR_2021WCH_Baku_Results_Women_Qualification,Load_Comp_Data.pdf,28,30,World Championships,2021,Baku
+world,Semi,GTR_2021WCH_Baku_Results_Women_Semi,Load_Comp_Data.pdf,88,88,World Championships,2021,Baku
+world,Final,GTR_2021WCH_Baku_Results_Women_Final,Load_Comp_Data.pdf,104,104,World Championships,2021,Baku
+world,Qualification,GTR_Tokyo2019_Results_Men_Qualification,GTR_Tokyo2019_MediaBook.pdf,109,113,World Championships,2019,Tokyo
+world,Semi,GTR_Tokyo2019_Results_Men_Semi,GTR_Tokyo2019_MediaBook.pdf,118,118,World Championships,2019,Tokyo
+world,Final,GTR_Tokyo2019_Results_Men_Final,GTR_Tokyo2019_MediaBook.pdf,122,122,World Championships,2019,Tokyo
+world,Qualification,GTR_Tokyo2019_Results_Women_Qualification,GTR_Tokyo2019_MediaBook.pdf,49,52,World Championships,2019,Tokyo
+world,Semi,GTR_Tokyo2019_Results_Women_Semi,GTR_Tokyo2019_MediaBook.pdf,57,57,World Championships,2019,Tokyo
+world,Final,GTR_Tokyo2019_Results_Women_Final,GTR_Tokyo2019_MediaBook.pdf,61,61,World Championships,2019,Tokyo
+world,Qualification,Tokyo_2020_Results_Men_Qualification,Tokyo 2020_Results_Book.pdf,59,59,Olympic Games,2020,Tokyo
+world,Final,Tokyo_2020_Results_Men_Final,Tokyo 2020_Results_Book.pdf,60,60,Olympic Games,2020,Tokyo
+world,Qualification,Tokyo_2020_Results_Women_Qualification,Tokyo 2020_Results_Book.pdf,57,57,Olympic Games,2020,Tokyo
+world,Final,Tokyo_2020_Results_Women_Final,Tokyo 2020_Results_Book.pdf,58,58,Olympic Games,2020,Tokyo

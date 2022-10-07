@@ -1,2 +1,7 @@
 secrets.toml
 .DS_Store
+test.csv
+*.pdf
+WCH_Tokyo_Startlist_Men.csv
+WCH_Tokyo_Startlist_Women.csv
+lists

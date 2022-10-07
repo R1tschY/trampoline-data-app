@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 # PDF processing
 
 df_data = pd.read_csv('data.csv') # data.csv contains information about events and their resultbooks
-header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
 df_main = pd.DataFrame(columns=header) # main dataframe
 df_mainpos = 0
 for idx, row in df_data.iterrows():
@@ -91,7 +91,7 @@ for idx, row in df_data.iterrows():
     df = pd.DataFrame()
     if association == 'world':
         if event_phase == 'Qualification':
-            header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+            header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
             df = pd.DataFrame(columns=header)
 
             df_pos = 0
@@ -210,7 +210,7 @@ for idx, row in df_data.iterrows():
                 df_mainpos += 1
             df.to_csv(output_name + ".csv", index=False)
         elif event_phase == "Semi":
-            header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+            header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
             df = pd.DataFrame(columns=header)
 
             df_pos = 0
@@ -317,7 +317,7 @@ for idx, row in df_data.iterrows():
                 # header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location")
             df.to_csv(output_name + ".csv", index=False)
         elif event_phase == "Final":
-            header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+            header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
             df = pd.DataFrame(columns=header)
 
             df_pos = 0
@@ -415,7 +415,7 @@ for idx, row in df_data.iterrows():
 
     elif association == 'europe':
         if event_phase == 'Qualification':
-            header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+            header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
             df = pd.DataFrame(columns=header)
 
             df_pos = 0
@@ -594,7 +594,7 @@ for idx, row in df_data.iterrows():
                 # header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified")
             df.to_csv(output_name + ".csv", index=False)
         elif event_phase == 'Semi':
-            header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+            header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
             df = pd.DataFrame(columns=header)
 
             df_pos = 0
@@ -691,7 +691,7 @@ for idx, row in df_data.iterrows():
                 # header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified")
             df.to_csv(output_name + ".csv", index=False)
         elif event_phase == 'Final':
-            header = ("Rank", "Routine", "Name", "D", "E", "T", "H", "Pen.", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
+            header = ("Rank", "Routine", "Name", "Diffculty", "Execution", "Time of flight", "Horizontal displacement", "Penalty", "Total", "End", "Country", "Qualified", "Event", "Phase", "Year", "Location", "Gender")
             df = pd.DataFrame(columns=header)
 
             df_pos = 0
