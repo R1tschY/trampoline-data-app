@@ -147,7 +147,7 @@ df_select = make_call(sql_str, engine)
     
 # df_select.droplevel("index")
 df_select.drop(['index'], axis=1, inplace=True)
-st.dataframe(df_select)
+st.dataframe(df_select.drop(["Hash", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull"], axis=1))
 if athlete != 'All':
     exercise = st.sidebar.selectbox(
         'Select Exercise:',
