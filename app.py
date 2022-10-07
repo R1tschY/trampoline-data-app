@@ -85,6 +85,9 @@ st.set_page_config(page_title="Trampoline Dashboard",
 # Defaults
 hash_val = 'empty'
 exercise = 'All'
+event_str = 'All'
+gender = 'All'
+athlete = 'All'
 
 engine = init_engine()
   
@@ -93,7 +96,11 @@ df = make_call(sql_str, engine)
 df['Event Name'] = df["Year"].astype(str) + " " + df["Event"]
 
 ## Sidebar
-st.markdown("### Main Overview")
+st.sidebar.markdown('## Explore Data')
+st.sidebar.markdown('*Make selections to explore data*')
+show_dataframe = st.sidebar.checkbox('Show data', value=True)
+if show_dataframe:
+    st.markdown("### Selected data")
 
 # Event
 
@@ -147,13 +154,15 @@ df_select = make_call(sql_str, engine)
     
 # df_select.droplevel("index")
 df_select.drop(['index'], axis=1, inplace=True)
-st.dataframe(df_select.drop(["Hash", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull"], axis=1))
+if show_dataframe:
+    st.dataframe(df_select.drop(["Hash", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull"], axis=1))
 if athlete != 'All':
     exercise = st.sidebar.selectbox(
         'Select Exercise:',
         (['All'] + [str(i) for i in np.arange(0, len(df_select))] )
         )
-debug = st.sidebar.checkbox('Debug')
+# debug = st.sidebar.checkbox('Debug')
+debug = False
 if exercise != 'All':
     hash_val = df_select["Hash"].iloc[0]
     if hash_val != '':
@@ -269,7 +278,9 @@ with right_column:
     else:
         st.write('Exercise file not available')
         
-st.sidebar.write('HD Analysis')
+st.sidebar.markdown('## Rank Analysis')
+if (event_str == 'All') | (gender == 'All'):
+    st.sidebar.markdown('*Select event and gender for rank analysis*')
 
 phase = st.sidebar.selectbox(
      'Select Phase:',
@@ -285,6 +296,8 @@ rating = st.sidebar.selectbox(
      'Select Rating:',
      (rating_str )
     )
+if (event_str != 'All') & (gender != 'All'):
+    st.sidebar.markdown('*Select different ratings to see rank changes*')
 
 if (event_str != 'All') and (gender != 'All') and (athlete == 'All'):
     # st.write(rating)
