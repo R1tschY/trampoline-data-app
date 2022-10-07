@@ -71,7 +71,7 @@ def calculate_ranks(df, rating):
     meanchange_list.append(np.mean(rank_change))
     df_result["Rankchange"] = rank_change_unsigned_str
 
-    pop_str = ["HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull", "Event", "Phase", "Year", "Location", "Year", "index", "Gender", "Routine", "Rank", "Qualified", "Hash"]
+    pop_str = ["HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull", "Event", "Phase", "Year", "Location", "Year", "index", "Gender", "Routine", "Rank", "Qualified", "Hash", "level_0"]
     if rating != "HD3 Original":
         pop_str.remove(rating)
     df_result = df_result.drop(pop_str, axis=1)
