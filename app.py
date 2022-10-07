@@ -167,17 +167,17 @@ def calculate_ranks(df, rating, engine):
                 # st.write(df_exercisedata)
                 x = df_exercisedata[['x']].values
                 y = df_exercisedata[['y']].values
-                if rating == "H3 Distance":
+                if rating == "HD3 Distance":
                     rating_list.append(calcDistance(x, y, 3))
-                if rating == "H5 Distance":
+                if rating == "HD5 Distance":
                     rating_list.append(calcDistance(x, y, 5))
-                if rating == "H3 Error":
+                if rating == "HD3 Error":
                     rating_list.append(calcError(x, y, 3))
-                if rating == "H5 Error":
+                if rating == "HD5 Error":
                     rating_list.append(calcError(x, y, 5))
-                if rating == "H3 Hull":
+                if rating == "HD3 Hull":
                     rating_list.append(calcArea(x, y, in_hd=3))
-                if rating == "H5 Hull":
+                if rating == "HD5 Hull":
                     rating_list.append(calcArea(x, y, in_hd=5))
                 # hull
             else:
@@ -185,10 +185,10 @@ def calculate_ranks(df, rating, engine):
         else:
             rating_list.append(0)
     
-    if rating != "H3 Original":
+    if rating != "HD3 Original":
         df[rating] = rating_list
         entry_full = 'Sum ' + rating
-        df[entry_full] = df['D'] + df['T'] + df['E'] + df[rating] + df['Pen.']
+        df[entry_full] = df['Difficulty'] + df['Time of flight'] + df['Execution'] + df[rating] + df['Penalty']
     else:
         entry_full = 'Total'
         
@@ -310,25 +310,7 @@ if athlete != 'All':
         )
 debug = st.sidebar.checkbox('Debug')
 if exercise != 'All':
-    athlete_name = athlete.split()
-    athlete_name = athlete_name[0].capitalize() + ' ' + athlete_name[1]
-    phase_select = df_select["Phase"].loc[int(exercise)]
-    routine_select = df_select["Routine"].loc[int(exercise)]
-
-    sql_str2 = "SELECT * from " + event_str.replace(" ", "_").lower() + "_" + gender.lower() + " where name=" + "'" + athlete_name + "' and phase=" + "'" + phase_select + "' and Routine=" + "'" + routine_select + "'"
-    # sql_str = 'SELECT * from "2021_world_championships_men"'
-
-    if debug:
-        st.write(sql_str2)
-    
-    df_athlete = make_call(sql_str2, engine)
-    if debug:
-        st.write(df_athlete)
-    if len(df_athlete) > 0:
-        hash_val = df_athlete["Hash"].iloc[0]
-    else:
-        hash_val = ''
-
+    hash_val = df_select["Hash"].iloc[0]
     if hash_val != '':
         sql_str2 = "SELECT * from `" + hash_val + "`"
         
@@ -347,7 +329,7 @@ if exercise != 'All':
         hd_error5 = calcError(x, y, 5)
 
         hd_title = 'HD: {0}  HD_H: {1}|{2}  HD_D: {3}|{4}  HD_E: {5}|{6}'.format(
-            df_select["H"].loc[int(exercise)],
+            df_select["Horizontal displacement"].loc[int(exercise)],
             hd_hull3,
             hd_hull5,
             hd_distance3,
@@ -363,7 +345,7 @@ left_column, right_column = st.columns(2)
 
 with left_column:
     if len(athlete) > 3:
-        df_polar = pd.melt(df_select, id_vars=['Rank','Name','Event', 'Routine', 'Country', 'Pen.', 'Total', 'End', 'Phase', 'Qualified', 'Location', 'Year', 'Gender'], var_name='Rating').sort_values(['Rank', 'Name'])
+        df_polar = pd.melt(df_select, id_vars=['Rank','Name','Event', 'Routine', 'Country', 'Penalty', 'Total', 'End', 'Phase', 'Qualified', 'Location', 'Year', 'Gender', 'Hash'], var_name='Rating').sort_values(['Rank', 'Name'])
         df_polar['Exercises'] = df_polar["Year"].astype(str) + " " + df_polar["Event"] + " " + df_polar["Phase"] + " " + df_polar["Routine"]
 
         fig = px.line_polar(
@@ -450,7 +432,7 @@ sql_str = "SELECT * from " + "(" + sql_str + ") AS T " + "where Phase=" + "'" + 
 
 
 df_ranking = make_call(sql_str, engine)
-rating_str = ("H3 Original", "H3 Distance", "H5 Distance", "H3 Error", "H5 Error", "H3 Hull", "H5 Hull")
+rating_str = ("HD3 Original", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull")
 rating = st.sidebar.selectbox(
      'Select Rating:',
      (rating_str )
