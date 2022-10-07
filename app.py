@@ -32,54 +32,12 @@ def make_call(sql_str, _engine):
 def calculate_ranks(df, rating):
     df = df.reset_index()
     rating_list = []
-    # for idx, row in df.iterrows():
-    #     gender = row['Gender']
-    #     athlete = row['Name']
-    #     athlete_name = athlete.split()
-    #     athlete_name = athlete_name[0].capitalize() + ' ' + athlete_name[1]
-    #     phase_select = df["Phase"].iloc[int(routine_conv[row['Routine']])]
-    #     routine_select = df["Routine"].iloc[int(routine_conv[row['Routine']])]
-    #     sql_str = "select * from " + event_str.replace(" ", "_").lower() + "_" + gender.lower() + " where name = '" + athlete_name + "' and phase = '" + phase_select + "' and routine = '" + routine_select + "'"
-    #     df_athlete = make_call(sql_str, engine)
-    #     # st.write(df_athlete)
-    #     if len(df_athlete) > 0:
-    #         hash_val = df_athlete["Hash"].iloc[0]
-    #         if hash_val != '':
-    #             sql_str = "select * from `" + hash_val + "`"
-    #             df_exercisedata = make_call(sql_str, engine)
-    #             df_exercisedata = df_exercisedata.astype(float)
-    #             # st.write(df_exercisedata)
-    #             x = df_exercisedata[['x']].values
-    #             y = df_exercisedata[['y']].values
-    #             if rating == "HD3 Distance":
-    #                 rating_list.append(calcDistance(x, y, 3))
-    #             if rating == "HD5 Distance":
-    #                 rating_list.append(calcDistance(x, y, 5))
-    #             if rating == "HD3 Error":
-    #                 rating_list.append(calcError(x, y, 3))
-    #             if rating == "HD5 Error":
-    #                 rating_list.append(calcError(x, y, 5))
-    #             if rating == "HD3 Hull":
-    #                 rating_list.append(calcArea(x, y, in_hd=3))
-    #             if rating == "HD5 Hull":
-    #                 rating_list.append(calcArea(x, y, in_hd=5))
-    #             # hull
-    #         else:
-    #             rating_list.append(0)
-    #     else:
-    #         rating_list.append(0)
-    
     if rating != "HD3 Original":
-        # df[rating] = rating_list
         entry_full = 'Sum ' + rating
         df[entry_full] = df['Difficulty'] + df['Time of flight'] + df['Execution'] + df[rating] + df['Penalty']
     else:
         entry_full = 'Total'
-        
-        
-        
-        # st.write(df_event)
-            # df_event
+
     rankchange_list = []
     meanchange_list = []
     
@@ -206,14 +164,14 @@ if exercise != 'All':
         x = df_exercisedata[['x']].values
         y = df_exercisedata[['y']].values
         # hull
-        hd_hull3 = calcArea(x, y, in_hd=3)
-        hd_hull5 = calcArea(x, y, in_hd=5)
+        hd_hull3 = df_select["HD3 Hull"].iloc[0]
+        hd_hull5 = df_select["HD5 Hull"].iloc[0]
         # distance
-        hd_distance3 = calcDistance(x, y, 3)
-        hd_distance5 = calcDistance(x, y, 5)
+        hd_distance3 = df_select["HD3 Distance"].iloc[0]
+        hd_distance5 = df_select["HD5 Distance"].iloc[0]
         # error
-        hd_error3 = calcError(x, y, 3)
-        hd_error5 = calcError(x, y, 5)
+        hd_error3 = df_select["HD3 Error"].iloc[0]
+        hd_error5 = df_select["HD3 Error"].iloc[0]
 
         hd_title = 'HD: {0}  HD_H: {1}|{2}  HD_D: {3}|{4}  HD_E: {5}|{6}'.format(
             df_select["Horizontal displacement"].loc[int(exercise)],
@@ -232,7 +190,10 @@ left_column, right_column = st.columns(2)
 
 with left_column:
     if len(athlete) > 3:
-        df_polar = pd.melt(df_select, id_vars=['Rank','Name','Event', 'Routine', 'Country', 'Penalty', 'Total', 'End', 'Phase', 'Qualified', 'Location', 'Year', 'Gender', 'Hash'], var_name='Rating').sort_values(['Rank', 'Name'])
+        df_polar = pd.melt(df_select, id_vars=['Rank', 'Name','Event', 'Routine', 'Country', 'Penalty',
+                                               'Total', 'End', 'Phase', 'Qualified', 'Location', 'Year',
+                                               'Gender', 'Hash',"HD3 Distance", "HD5 Distance", "HD3 Error",
+                                               "HD5 Error", "HD3 Hull", "HD5 Hull"], var_name='Rating').sort_values(['Rank', 'Name'])
         df_polar['Exercises'] = df_polar["Year"].astype(str) + " " + df_polar["Event"] + " " + df_polar["Phase"] + " " + df_polar["Routine"]
 
         fig = px.line_polar(
