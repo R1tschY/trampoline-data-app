@@ -15,19 +15,20 @@ This data app makes it possible to explore changes following the different ratin
 ## Procedure (see figure below)
 
 - Scrape data from event result books to get scores for relevant events (difficulty, execution, time of flight, horizontal displacement)
-- Match existing exercise data (time of flight per jump, x, y coordinates of athletes contact position) for each exercise 
+- Match existing exercise data (time of flight per jump, x- & y-coordinates of athletes contact positions) to calculate new approaches
 - Create MySQL database with scores and exercise data
 
 ## Technical aspects
 - Data conversion from PDF to text with Post Script
 - Data conversion from text to structured data with Python and Pandas
 - MySQL database at Google Cloud
-- Streamlit data app connected to MySQL database via GitHub repository
+- Streamlit data app connected to MySQL database managed by GitHub repository
 
 ## Problem solving
-- PDF rule books from different associations with different formatting hence different algorithms
+- PDF rule books from different associations with different formatting require different algorithms
 - Old exercise data without athlete information. Matching through start time, time of flight and horizontal displacement
 - New exercise data with unique athlete information easy to match
+- Database optimization to ensure reactive data app
 
 
 ![Procedure](tech_exp.png)
