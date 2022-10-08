@@ -90,7 +90,7 @@ gender = 'All'
 athlete = 'All'
 
 engine = init_engine()
-  
+st.markdown('# Trampoline Data App')
 sql_str = "SELECT * from ranklists"
 df = make_call(sql_str, engine)
 df['Event Name'] = df["Year"].astype(str) + " " + df["Event"]
@@ -304,3 +304,7 @@ if (event_str != 'All') and (gender != 'All') and (athlete == 'All'):
     df_result = calculate_ranks(df_ranking, rating)
     st.markdown("### Rank Analysis")
     st.table(df_result)
+
+st.sidebar.markdown('## Info')
+st.sidebar.markdown('Go to [readme](https://github.com/falkoin/portfolio#readme) to get more information.')
+st.sidebar.markdown('[Repository](https://github.com/falkoin/portfolio) with source code.')  
