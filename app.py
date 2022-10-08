@@ -56,8 +56,8 @@ def calculate_ranks(df, rating):
                             else:
                                 idx_list.append(idx2)
                         else:
-                            df[entry_full].iloc[idx2-1] = row2[entry_full] + df.iloc[idx2-1][entry_full]
-                            idx_list.append(idx2)
+                            df[entry_full].iloc[idx2] = row2[entry_full] + df.iloc[idx2-1][entry_full]
+                            idx_list.append(idx2-1)
                             
     # st.write(df)
     df_result = df.drop(idx_list, axis=0)
