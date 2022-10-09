@@ -159,7 +159,7 @@ if show_dataframe:
     st.dataframe(df_select.drop(["Hash", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull"], axis=1))
 if athlete != 'All':
     exercise = st.sidebar.selectbox(
-        'Select Exercise:',
+        'Select Routine:',
         (['All'] + [str(i) for i in np.arange(0, len(df_select))] )
         )
 # debug = st.sidebar.checkbox('Debug')
@@ -197,7 +197,7 @@ with left_column:
                                                'Total', 'End', 'Phase', 'Qualified', 'Location', 'Year',
                                                'Gender', 'Hash',"HD3 Distance", "HD5 Distance", "HD3 Error",
                                                "HD5 Error", "HD3 Hull", "HD5 Hull"], var_name='Rating').sort_values(['Rank', 'Name'])
-        df_polar['Exercises'] = df_polar["Year"].astype(str) + " " + df_polar["Event"] + " " + df_polar["Phase"] + " " + df_polar["Routine"]
+        df_polar['Routines'] = df_polar["Year"].astype(str) + " " + df_polar["Event"] + " " + df_polar["Phase"] + " " + df_polar["Routine"]
 
         fig = px.line_polar(
             
@@ -206,7 +206,7 @@ with left_column:
             r="value",
             theta="Rating",
             line_close=True,
-            color="Exercises",
+            color="Routines",
             range_r = [0, 20]
             
         )
