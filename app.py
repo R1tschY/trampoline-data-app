@@ -88,6 +88,7 @@ exercise = 'All'
 event_str = 'All'
 gender = 'All'
 athlete = 'All'
+rating_str = ("HD3 Original", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull")
 
 engine = init_engine()
 st.markdown('# Trampoline Data App')
@@ -163,8 +164,9 @@ if athlete != 'All':
         )
 # debug = st.sidebar.checkbox('Debug')
 debug = False
-if exercise != 'All':
-    hash_val = df_select["Hash"].iloc[0]
+if exercise is not 'All':
+    hash_val = df_select["Hash"].iloc[int(exercise)]
+    # st.write(hash_val)
     if hash_val != '':
         sql_str2 = "SELECT * from `" + hash_val + "`"
         
@@ -182,15 +184,7 @@ if exercise != 'All':
         hd_error3 = df_select["HD3 Error"].iloc[0]
         hd_error5 = df_select["HD3 Error"].iloc[0]
 
-        hd_title = 'HD: {0}  HD_H: {1}|{2}  HD_D: {3}|{4}  HD_E: {5}|{6}'.format(
-            df_select["Horizontal displacement"].loc[int(exercise)],
-            hd_hull3,
-            hd_hull5,
-            hd_distance3,
-            hd_distance5,
-            hd_error3,
-            hd_error5
-            )
+        
 # st.write(df_exercisedata)
 
 
@@ -225,7 +219,7 @@ with left_column:
                     df_exercisedata,
                     x=bar_text,
                     y='T',
-                    title='Time of Flight'
+                    title=f"Time of Flight: {np.round(df_exercisedata['T'].sum(), 2)}"
                     )
                 fig3.update_xaxes(title_text='Jumps')
                 fig3.update_yaxes(title_text='Time (s)')
@@ -242,8 +236,27 @@ trampoline_list = [
                 ]
 with right_column:
     if hash_val !='':
-        if exercise != 'All':
+        if exercise is not 'All':
             # st.write('HD:')
+            
+            picked_rating = st.radio('Pick a rating approach', rating_str, index=0, horizontal=True)
+            show_visualization = st.checkbox('Visualize approach', value=False)
+            # hd_title = 'HD: {0}  HD_H: {1}|{2}  HD_D: {3}|{4}  HD_E: {5}|{6}'.format(
+            if picked_rating == "HD3 Original":
+                hd_title = df_select["Horizontal displacement"].loc[int(exercise)]
+            elif picked_rating == "HD3 Hull":
+                hd_title = hd_hull3
+            elif picked_rating == "HD5 Hull":
+                hd_title = hd_hull5
+            elif picked_rating == "HD3 Distance":
+                hd_title = hd_distance3
+            elif picked_rating == "HD5 Distance":
+                hd_title = hd_distance5
+            elif picked_rating == "HD3 Error":
+                hd_title = hd_error3
+            elif picked_rating == "HD5 Error":
+                hd_title = hd_error5
+            # )
             scatter_text = df_exercisedata["index"]+1
             fig2 = px.scatter(
                 df_exercisedata,
@@ -252,7 +265,7 @@ with right_column:
                 text=scatter_text,
                 color='H',
                 range_color=(0.7,1),
-                title=hd_title
+                title=f"Horizontal Displacement: {hd_title}"
                 )
             fig2.update_traces(textposition='bottom right')
             fig2.update_layout(
@@ -272,7 +285,95 @@ with right_column:
                         color_discrete_sequence=['#7f7f7f']
                     ).data[0]
                 )
-            
+            if show_visualization:
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=30,
+                                            y=45,
+                                            showarrow=False,
+                                            text="0.0",
+                                            textangle=0,
+                                            xanchor='left'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=83,
+                                            y=45,
+                                            showarrow=False,
+                                            text="0.1",
+                                            textangle=0,
+                                            xanchor='left'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=190,
+                                            y=45,
+                                            showarrow=False,
+                                            text="0.2",
+                                            textangle=0,
+                                            xanchor='left'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=190,
+                                            y=97,
+                                            showarrow=False,
+                                            text="0.3",
+                                            textangle=0,
+                                            xanchor='left'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=10,
+                                            y=97,
+                                            showarrow=False,
+                                            text="0.2",
+                                            textangle=0,
+                                            xanchor='right'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=-83,
+                                            y=45,
+                                            showarrow=False,
+                                            text="0.1",
+                                            textangle=0,
+                                            xanchor='right'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=-190,
+                                            y=45,
+                                            showarrow=False,
+                                            text="0.2",
+                                            textangle=0,
+                                            xanchor='right'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=-190,
+                                            y=-63,
+                                            showarrow=False,
+                                            text="0.3",
+                                            textangle=0,
+                                            xanchor='right'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=-190,
+                                            y=97,
+                                            showarrow=False,
+                                            text="0.3",
+                                            textangle=0,
+                                            xanchor='right'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=190,
+                                            y=-63,
+                                            showarrow=False,
+                                            text="0.3",
+                                            textangle=0,
+                                            xanchor='left'
+                                    ))
+                fig2.add_annotation(dict(font=dict(color='black',size=15),
+                                            x=10,
+                                            y=-63,
+                                            showarrow=False,
+                                            text="0.2",
+                                            textangle=0,
+                                            xanchor='right'
+                                    ))
             st.plotly_chart(fig2)
             
     else:
@@ -291,7 +392,7 @@ sql_str = "SELECT * from " + "(" + sql_str + ") AS T " + "where Phase=" + "'" + 
 
 
 df_ranking = make_call(sql_str, engine)
-rating_str = ("HD3 Original", "HD3 Distance", "HD5 Distance", "HD3 Error", "HD5 Error", "HD3 Hull", "HD5 Hull")
+
 rating = st.sidebar.selectbox(
      'Select Rating:',
      (rating_str )
