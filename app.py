@@ -175,14 +175,14 @@ if exercise is not 'All':
         x = df_exercisedata[['x']].values
         y = df_exercisedata[['y']].values
         # hull
-        hd_hull3 = df_select["HD3 Hull"].iloc[0]
-        hd_hull5 = df_select["HD5 Hull"].iloc[0]
+        hd_hull3 = df_select["HD3 Hull"].iloc[int(exercise)]
+        hd_hull5 = df_select["HD5 Hull"].iloc[int(exercise)]
         # distance
-        hd_distance3 = df_select["HD3 Distance"].iloc[0]
-        hd_distance5 = df_select["HD5 Distance"].iloc[0]
+        hd_distance3 = df_select["HD3 Distance"].iloc[int(exercise)]
+        hd_distance5 = df_select["HD5 Distance"].iloc[int(exercise)]
         # error
-        hd_error3 = df_select["HD3 Error"].iloc[0]
-        hd_error5 = df_select["HD3 Error"].iloc[0]
+        hd_error3 = df_select["HD3 Error"].iloc[int(exercise)]
+        hd_error5 = df_select["HD5 Error"].iloc[int(exercise)]
 
         
 # st.write(df_exercisedata)
@@ -240,8 +240,22 @@ with right_column:
             # st.write('HD:')
             
             picked_rating = st.radio('Pick a rating approach', rating_str, index=0, horizontal=True)
+            if 'HD5' in picked_rating:
+                lower_limit = 5
+                upper_limit = 10
+                color_vec = np.repeat([df_select[picked_rating].iloc[int(exercise)]], 10)
+                color_title = 'Routine'
+            elif picked_rating == 'HD3 Original':
+                lower_limit = 0.7
+                upper_limit = 1.0
+                color_vec = 'H'
+                color_title = 'Jump'
+            elif 'HD3' in picked_rating:
+                lower_limit = 7
+                upper_limit = 10
+                color_vec = np.repeat([df_select[picked_rating].iloc[int(exercise)]], 10)
+                color_title = 'Routine'
             show_visualization = st.checkbox('Visualize approach', value=False)
-            # hd_title = 'HD: {0}  HD_H: {1}|{2}  HD_D: {3}|{4}  HD_E: {5}|{6}'.format(
             if picked_rating == "HD3 Original":
                 hd_title = df_select["Horizontal displacement"].loc[int(exercise)]
             elif picked_rating == "HD3 Hull":
@@ -263,8 +277,8 @@ with right_column:
                 x='x',
                 y='y',
                 text=scatter_text,
-                color='H',
-                range_color=(0.7,1),
+                color=color_vec,
+                range_color=(lower_limit, upper_limit),
                 title=f"Horizontal Displacement: {hd_title}"
                 )
             fig2.update_traces(textposition='bottom right')
@@ -275,7 +289,8 @@ with right_column:
                 xaxis_showticklabels=False,
                 yaxis_visible=False,
                 yaxis_showticklabels=False,
-                coloraxis={"colorscale": [[0, "red"], [0.5, "yellow"], [1, "green"]]}
+                coloraxis={"colorscale": [[0, "red"], [0.5, "yellow"], [1, "green"]]},
+                coloraxis_colorbar={"title": color_title}
                 )
             for entry in trampoline_list:
                 fig2.add_trace(
@@ -285,7 +300,7 @@ with right_column:
                         color_discrete_sequence=['#7f7f7f']
                     ).data[0]
                 )
-            if show_visualization:
+            if show_visualization and picked_rating == "HD3 Original":
                 fig2.add_annotation(dict(font=dict(color='black',size=15),
                                             x=30,
                                             y=45,
@@ -374,6 +389,36 @@ with right_column:
                                             textangle=0,
                                             xanchor='right'
                                     ))
+            elif show_visualization and 'Distance' in picked_rating :
+                list1a = df_exercisedata['x'].to_list()
+                list1b = df_exercisedata['y'].to_list()
+                list2 = [0] * len(list1a)
+                resulta = [None] * (len(list1a) + len(list2))
+                resultb = [None] * (len(list1a) + len(list2))
+                resulta[::2] = list1a
+                resulta[1::2] = list2 
+                resultb[::2] = list1b
+                resultb[1::2] = list2 
+                fig2.add_trace(
+                    px.line(
+                        x=resulta,
+                        y=resultb,
+                        color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
+                    ).data[0]
+                )
+            elif show_visualization and 'Hull' in picked_rating :
+                if len(df_exercisedata['x'].to_list()) > 3:
+                    list1a = df_exercisedata['x'].to_numpy()
+                    list1b = df_exercisedata['y'].to_numpy()
+                    hull_pts = ConvexHull(np.column_stack((list1a,list1b)))
+                    fig2.add_trace(
+                        px.line(
+                            x=np.append(list1a[hull_pts.vertices], list1a[hull_pts.vertices[0]]),
+                            y=np.append(list1b[hull_pts.vertices], list1b[hull_pts.vertices[0]]),
+                            color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
+                        ).data[0]
+                    )
+
             st.plotly_chart(fig2)
             
     else:
