@@ -406,7 +406,7 @@ with right_column:
                         color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
                     ).data[0]
                 )
-            elif show_visualization and 'Hull' in picked_rating :
+            elif show_visualization and 'Hull' in picked_rating:
                 if len(df_exercisedata['x'].to_list()) > 3:
                     list1a = df_exercisedata['x'].to_numpy()
                     list1b = df_exercisedata['y'].to_numpy()
@@ -418,6 +418,35 @@ with right_column:
                             color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
                         ).data[0]
                     )
+            elif show_visualization and 'Error' in picked_rating :
+                list1a = df_exercisedata['x'].to_list()
+                list1b = df_exercisedata['y'].to_list()
+                list1a = [i*2 if abs(i) > 107.5 else i for i in list1a] # account for values in more dangerous parts of the trampoline
+                list1b = [i*2 if abs(i) > 54 else i for i in list1b]
+                list1b = [i * 2 for i in list1b]
+                list2 = [0] * len(list1a)
+                resulta = [None] * (len(list1a) + len(list2))
+                resultb = [None] * (len(list1a) + len(list2))
+                resulta[::2] = list1a
+                resulta[1::2] = list2 
+                resultb[::2] = list1b
+                resultb[1::2] = list2 
+                fig2.add_trace(
+                    px.line(
+                        x=resulta,
+                        y=resultb,
+                        color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
+                    ).data[0],
+                )
+                fig2.add_trace(
+                    px.scatter(
+                    df_exercisedata,
+                    x=list1a,
+                    y=list1b,
+                    color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
+                    ).data[0],
+                )
+            
 
             st.plotly_chart(fig2)
             
