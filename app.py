@@ -97,6 +97,9 @@ df = make_call(sql_str, engine)
 df['Event Name'] = df["Year"].astype(str) + " " + df["Event"]
 
 ## Sidebar
+st.sidebar.markdown('## Info')
+st.sidebar.markdown('Go to [readme](https://github.com/falkoin/portfolio#readme) to get more information.')
+st.sidebar.markdown('[Repository](https://github.com/falkoin/portfolio) with source code.')  
 st.sidebar.markdown('## Explore Data')
 st.sidebar.markdown('*Make selections to explore data*')
 show_dataframe = st.sidebar.checkbox('Show data', value=True)
@@ -484,6 +487,3 @@ if (event_str != 'All') and (gender != 'All') and (athlete == 'All'):
     st.markdown("### Rank Analysis")
     st.table(df_result)
 
-st.sidebar.markdown('## Info')
-st.sidebar.markdown('Go to [readme](https://github.com/falkoin/portfolio#readme) to get more information.')
-st.sidebar.markdown('[Repository](https://github.com/falkoin/portfolio) with source code.')  
