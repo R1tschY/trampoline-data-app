@@ -160,8 +160,10 @@ if show_dataframe:
 if athlete != 'All':
     exercise = st.sidebar.selectbox(
         'Select Routine:',
-        (['All'] + [str(i) for i in np.arange(0, len(df_select))] )
+        (['All'] + [str(i) for i in np.arange(1, len(df_select)+1)] )
         )
+if exercise != 'All':
+    exercise = str(int(exercise)-1)
 # debug = st.sidebar.checkbox('Debug')
 debug = False
 if exercise is not 'All':
@@ -407,8 +409,10 @@ with right_column:
                     ).data[0]
                 )
             elif show_visualization and 'Hull' in picked_rating:
-                if len(df_exercisedata['x'].to_list()) > 3:
-                    list1a = df_exercisedata['x'].to_numpy()
+                list1a = df_exercisedata['x'].to_numpy()
+                test_nan = np.sum(np.isnan(list1a))
+                valid_values = len(x)-test_nan
+                if valid_values > 2:
                     list1b = df_exercisedata['y'].to_numpy()
                     hull_pts = ConvexHull(np.column_stack((list1a,list1b)))
                     fig2.add_trace(
@@ -451,7 +455,7 @@ with right_column:
             st.plotly_chart(fig2)
             
     else:
-        st.write('Exercise file not available')
+        st.write('Routine file not available')
         
 st.sidebar.markdown('## Rank Analysis')
 if (event_str == 'All') | (gender == 'All'):
