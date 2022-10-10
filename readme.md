@@ -17,7 +17,7 @@ This data app makes it possible to explore changes following the different ratin
 - Scrape data from event result books to get scores for relevant events (difficulty, execution, time of flight, horizontal displacement)
 - Match existing routine data (time of flight per jump, x- & y-coordinates of athletes contact positions) to calculate new approaches
 - Create MySQL database with scores and routine data
-- App queries data from database according to users request
+- App queries data from database according to user requests
 
 ## Technical aspects
 - Data conversion from PDF to text with Post Script
