@@ -173,9 +173,10 @@ if exercise is not 'All':
     hash_val = df_select["Hash"].iloc[int(exercise)]
     # st.write(hash_val)
     if hash_val != '':
-        sql_str2 = "SELECT * from `" + hash_val + "`"
+        sql_str2 = "SELECT * from `routinedata` where hash= '" + hash_val + "'"
         
         df_exercisedata = make_call(sql_str2, engine)
+        df_exercisedata = df_exercisedata.drop('Hash', axis=1)
         df_exercisedata = df_exercisedata.astype(float)
         x = df_exercisedata[['x']].values
         y = df_exercisedata[['y']].values
