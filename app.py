@@ -40,27 +40,55 @@ def calculate_ranks(df, rating):
 
     rankchange_list = []
     meanchange_list = []
-    
     idx_list = []
-    for idx2, row2 in df.iterrows():
-        if idx2 > 0:
-            if row2[entry_full] == 0.0:
-                    # print("Dropped because no file")
-                    idx_list.append(idx2)
+    df_routine01 = df[df["Routine"] == "1st"]
+    df_routine02 = df[df["Routine"] == "2nd"]
+    for idx, row in df_routine01.iterrows():
+        if phase == "Qualification": # if qual we need to cope with two routines
+            test = df_routine02[df_routine02["Name"] == row["Name"]] # find athletes with two routines
+            if len(test) == 0: # if we didn't find a match drop -> only 1 routine
+                idx_list.append(idx)
             else:
-                if phase == "Qualification":
-                    if row2["Name"] == df.iloc[idx2-1]["Name"]:
-                        if "Europe" in event_str:
-                            if (row2[entry_full] > df.iloc[idx2-1][entry_full]):
-                                idx_list.append(idx2-1)
-                            else:
-                                idx_list.append(idx2)
-                        else:
-                            df[entry_full].iloc[idx2] = row2[entry_full] + df.iloc[idx2-1][entry_full]
-                            idx_list.append(idx2-1)
+                if "Europe" in event_str: # europe events only count better routine
+                    if row[entry_full] < test[entry_full].iloc[0]: # if the other routine was better, change entry
+                        df_routine01.loc[idx:idx] = test.values
+                else: # non europe
+                    # print(f"{row[entry_full]} {test[entry_full]}")
+                    if row[entry_full] > test[entry_full].iloc[0]: # if the routin is better then calc sum score
+                        df_routine01.at[idx, entry_full] = row[entry_full] + test[entry_full].iloc[0]
+                    else: # if other routine is better then change routines and calc sum score
+                        # st.write(test.values)
+                        df_routine01.loc[idx:idx] = test.values
+                        df_routine01.at[idx, entry_full] = row[entry_full] + test[entry_full].iloc[0]
+        else:
+            if rating != "HD3 Original":
+                if row[rating] == 0: # remove 0 ratings
+                    idx_list.append(idx)
+
+
+    
+    # for idx2, row2 in df.iterrows():
+    #     if idx2 > 0:
+    #         if (rating != "HD3 Original"):
+    #             if (row2[rating] == 0.0):
+    #             #     # print("Dropped because no file")
+    #                 idx_list.append(idx2)
+    #             #     if (row2["Name"] == df.iloc[idx2-1]["Name"]) & (row2["Routine"] == "2nd"):
+    #             #         idx_list.append(idx2-1)
+    #         else:
+    #             if phase == "Qualification":
+    #                 if row2["Name"] == df.iloc[idx2-1]["Name"]:
+    #                     if "Europe" in event_str:
+    #                         if (row2[entry_full] > df.iloc[idx2-1][entry_full]):
+    #                             idx_list.append(idx2-1)
+    #                         else:
+    #                             idx_list.append(idx2)
+    #                     else:
+    #                         df.at[idx2, entry_full] = row2[entry_full] + df.at[idx2-1, entry_full]
+    #                         idx_list.append(idx2-1)
                             
     # st.write(df)
-    df_result = df.drop(idx_list, axis=0)
+    df_result = df_routine01.drop(idx_list, axis=0)
     df_result = df_result.sort_values(by=[entry_full], ascending=False)
     new_rank = df_result["Rank"]
     df_result['New Rank'] = np.sort(new_rank)
@@ -169,7 +197,7 @@ if exercise != 'All':
     exercise = str(int(exercise)-1)
 # debug = st.sidebar.checkbox('Debug')
 debug = False
-if exercise is not 'All':
+if exercise != 'All':
     hash_val = df_select["Hash"].iloc[int(exercise)]
     # st.write(hash_val)
     if hash_val != '':
@@ -241,8 +269,8 @@ trampoline_list = [
                     [[0, 0], [-35, 35]],
                 ]
 with right_column:
-    if hash_val !='':
-        if exercise is not 'All':
+    if hash_val != '':
+        if exercise != 'All':
             # st.write('HD:')
             
             picked_rating = st.radio('Pick a rating approach', rating_str, index=0, horizontal=True)
