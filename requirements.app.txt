@@ -1,0 +1,9 @@
+cryptography==41.0.1
+numpy==1.24.3
+pandas==2.0.2
+plotly==5.15.0
+plotly-express==0.4.1
+pymysql==1.0.3
+scipy==1.10.1
+SQLAlchemy==2.0.16
+streamlit==1.23.1

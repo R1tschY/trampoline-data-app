@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  portfolio:
+    build:
+      context: "."
+    restart: no
+    ports:
+      - "8501:8501"
+    volumes:
+      - "./docker-secrets.toml:/app/.streamlit/secrets.toml:ro"
+    networks:
+      - mysql
+
+  mysql:
+    image: "mysql:8"
+    command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+    restart: no
+    environment:
+      MYSQL_USER: trampoline
+      MYSQL_PASSWORD: trampoline
+      MYSQL_ROOT_PASSWORD: secret-root-pwd
+      MYSQL_DATABASE: trampoline
+    volumes:
+      - "mysql:/var/lib/mysql"
+    networks:
+      - mysql
+    ports:
+      - "3306:3306"
+
+networks:
+  mysql:
+
+volumes:
+  mysql:
