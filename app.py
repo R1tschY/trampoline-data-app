@@ -13,7 +13,7 @@ routine_conv = {
     '2nd': 1
 }
 ## Functions
-@st.experimental_singleton
+@st.cache_resource
 def init_engine():
     engine = create_engine(
     sqlalchemy.engine.url.URL.create(
@@ -23,7 +23,7 @@ def init_engine():
     )
     return engine
 
-@st.experimental_memo(ttl=600)
+@st.cache_data(ttl=600)
 def make_call(sql_str, _engine):
     with _engine.connect() as con:
         df = pd.read_sql(sql_str, con)
@@ -66,7 +66,7 @@ def calculate_ranks(df, rating):
                     idx_list.append(idx)
 
 
-    
+
     # for idx2, row2 in df.iterrows():
     #     if idx2 > 0:
     #         if (rating != "HD3 Original"):
@@ -86,7 +86,7 @@ def calculate_ranks(df, rating):
     #                     else:
     #                         df.at[idx2, entry_full] = row2[entry_full] + df.at[idx2-1, entry_full]
     #                         idx_list.append(idx2-1)
-                            
+
     # st.write(df)
     df_result = df_routine01.drop(idx_list, axis=0)
     df_result = df_result.sort_values(by=[entry_full], ascending=False)
@@ -127,7 +127,7 @@ df['Event Name'] = df["Year"].astype(str) + " " + df["Event"]
 ## Sidebar
 st.sidebar.markdown('## Info')
 st.sidebar.markdown('Go to [readme](https://github.com/falkoin/portfolio#readme) to get more information.')
-st.sidebar.markdown('[Repository](https://github.com/falkoin/portfolio) with source code.')  
+st.sidebar.markdown('[Repository](https://github.com/falkoin/portfolio) with source code.')
 st.sidebar.markdown('## Explore Data')
 st.sidebar.markdown('*Make selections to explore data*')
 show_dataframe = st.sidebar.checkbox('Show data', value=True)
@@ -183,7 +183,7 @@ else:
 
 
 df_select = make_call(sql_str, engine)
-    
+
 # df_select.droplevel("index")
 df_select.drop(['index'], axis=1, inplace=True)
 if show_dataframe:
@@ -202,7 +202,7 @@ if exercise != 'All':
     # st.write(hash_val)
     if hash_val != '':
         sql_str2 = "SELECT * from `routinedata` where hash= '" + hash_val + "'"
-        
+
         df_exercisedata = make_call(sql_str2, engine)
         df_exercisedata = df_exercisedata.drop('Hash', axis=1)
         df_exercisedata = df_exercisedata.astype(float)
@@ -218,7 +218,7 @@ if exercise != 'All':
         hd_error3 = df_select["HD3 Error"].iloc[int(exercise)]
         hd_error5 = df_select["HD5 Error"].iloc[int(exercise)]
 
-        
+
 # st.write(df_exercisedata)
 
 
@@ -234,7 +234,7 @@ with left_column:
         df_polar['Routines'] = df_polar["Year"].astype(str) + " " + df_polar["Event"] + " " + df_polar["Phase"] + " " + df_polar["Routine"]
 
         fig = px.line_polar(
-            
+
             df_polar,
             title=athlete,
             r="value",
@@ -242,7 +242,7 @@ with left_column:
             line_close=True,
             color="Routines",
             range_r = [0, 20]
-            
+
         )
         st.plotly_chart(fig)
         # st.write(df_exercisedata)
@@ -258,7 +258,7 @@ with left_column:
                 fig3.update_xaxes(title_text='Jumps')
                 fig3.update_yaxes(title_text='Time (s)')
                 st.plotly_chart(fig3)
-        
+
 trampoline_list = [
                     [[54, 54, -54, -54, 54], [54, -54, -54, 54, 54]],
                     [[214, -214], [54, 54]],
@@ -272,7 +272,7 @@ with right_column:
     if hash_val != '':
         if exercise != 'All':
             # st.write('HD:')
-            
+
             picked_rating = st.radio('Pick a rating approach', rating_str, index=0, horizontal=True)
             if 'HD5' in picked_rating:
                 lower_limit = 5
@@ -430,9 +430,9 @@ with right_column:
                 resulta = [None] * (len(list1a) + len(list2))
                 resultb = [None] * (len(list1a) + len(list2))
                 resulta[::2] = list1a
-                resulta[1::2] = list2 
+                resulta[1::2] = list2
                 resultb[::2] = list1b
-                resultb[1::2] = list2 
+                resultb[1::2] = list2
                 fig2.add_trace(
                     px.line(
                         x=resulta,
@@ -464,9 +464,9 @@ with right_column:
                 resulta = [None] * (len(list1a) + len(list2))
                 resultb = [None] * (len(list1a) + len(list2))
                 resulta[::2] = list1a
-                resulta[1::2] = list2 
+                resulta[1::2] = list2
                 resultb[::2] = list1b
-                resultb[1::2] = list2 
+                resultb[1::2] = list2
                 fig2.add_trace(
                     px.line(
                         x=resulta,
@@ -482,13 +482,13 @@ with right_column:
                     color_discrete_sequence=['rgba(150, 150, 150, 0.5)']
                     ).data[0],
                 )
-            
+
 
             st.plotly_chart(fig2)
-            
+
     else:
         st.write('Routine file not available')
-        
+
 st.sidebar.markdown('## Rank Analysis')
 if (event_str == 'All') | (gender == 'All'):
     st.sidebar.markdown('*Select event and gender for rank analysis*')
